@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LOG-BOOK | Weekly JIRA Report</title>
+    <meta
+      name="description"
+      content="LOG-BOOK — Weekly JIRA reporting workspace"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-background" aria-hidden="true">
+      <div class="grid-overlay"></div>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="orb orb-4"></div>
+    </div>
+
+    <header class="top-nav glass-panel">
+      <div class="nav-brand" aria-label="LOG-BOOK brand">
+        <div class="brand-mark">
+          <span class="amazon-logo" aria-hidden="true">
+            <span class="amazon-logo-letter">a</span>
+            <span class="amazon-logo-smile"></span>
+          </span>
+        </div>
+        <div class="brand-copy">
+          <span class="eyebrow">JIRA intelligence workspace</span>
+          <h1>LOG-BOOK</h1>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="profile-badge" aria-label="User profile">NLM</div>
+      </div>
+    </header>
+
+    <main class="app-shell dashboard-shell">
+      <section class="hero-panel glass-panel is-compact">
+        <div class="panel-header panel-header--compact">
+          <div>
+            <p class="section-kicker">Jira Quality Assurance</p>
+            <h2>Weekly JIRA Report</h2>
+          </div>
+          <span class="status-pill">Live review</span>
+        </div>
+
+        <div class="hero-grid">
+          <div class="feature-card feature-card--primary live-story-card">
+            <div class="mini-label">Story Analysis</div>
+            <div class="value" id="storiesChecked">0</div>
+            <div class="trend">Stories checked this session</div>
+          </div>
+        </div>
+
+        <section class="jira-history" aria-labelledby="jiraHistoryTitle">
+          <div class="history-header">
+            <div>
+              <p class="section-kicker">Review activity</p>
+              <h3 id="jiraHistoryTitle">JIRA review history</h3>
+            </div>
+            <span class="history-page-label" id="historyPageLabel">Page 1</span>
+          </div>
+          <div class="history-table-wrap">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th scope="col">Sl No</th>
+                  <th scope="col">JIRA Number</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="jiraHistoryBody"></tbody>
+            </table>
+          </div>
+          <div class="history-empty" id="historyEmpty">No JIRA reviews yet.</div>
+          <div class="history-controls">
+            <button class="history-btn" id="historyPrevious" type="button">Previous</button>
+            <span id="historyRangeLabel">0 reviews</span>
+            <button class="history-btn" id="historyNext" type="button">Next</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="dashboard-layout">
+        <aside class="sidebar-panel glass-panel">
+          <div class="sidebar-header">
+            <div class="sidebar-title-wrap">
+              <span class="sidebar-icon">◫</span>
+              <h3>Jira Analyzer</h3>
+            </div>
+          </div>
+
+          <label class="field-group" for="storyKey">
+            <span class="field-label">Story Key</span>
+            <div class="input-wrap">
+              <span class="input-icon">◫</span>
+              <input id="storyKey" type="text" placeholder="e.g. TES-1" />
+            </div>
+          </label>
+
+          <div class="module-list" aria-label="Modules to review">
+            <label class="module-option">
+              <input type="checkbox" checked />
+              <span>Clarity &amp; Grammar</span>
+            </label>
+            <label class="module-option">
+              <input type="checkbox" checked />
+              <span>Acceptance Criteria</span>
+            </label>
+            <label class="module-option">
+              <input type="checkbox" checked />
+              <span>Technical Feasibility</span>
+            </label>
+          </div>
+
+          <button class="primary-btn" type="button">Review Story</button>
+        </aside>
+
+        <div class="main-panel">
+          <div class="stats-row">
+            <div class="stat-card glass-panel">
+              <div class="stat-icon blue">
+                <span>◫</span>
+              </div>
+              <div class="stat-copy">
+                <div class="stat-value" id="storiesCheckedStat">0</div>
+                <div class="stat-label">Stories Checked</div>
+              </div>
+            </div>
+            <div class="stat-card glass-panel valid-story-widget">
+              <div class="stat-icon green">
+                <span>✓</span>
+              </div>
+              <div class="stat-copy">
+                <div class="stat-value" id="validStoriesStat">0</div>
+                <div class="stat-label">Valid JIRA</div>
+              </div>
+            </div>
+            <div class="stat-card glass-panel invalid-story-widget">
+              <div class="stat-icon orange">
+                <span>!</span>
+              </div>
+              <div class="stat-copy">
+                <div class="stat-value" id="invalidStoriesStat">0</div>
+                <div class="stat-label">Invalid Stories</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="workspace-panel glass-panel" id="reviewWorkspace">
+            <div class="analysis-badge" id="analysisBadge">ANALYSIS COMPLETE</div>
+
+            <div class="workspace-placeholder" id="workspacePlaceholder">
+              <div class="radar-wrap" aria-hidden="true">
+                <div class="radar-ring ring-1"></div>
+                <div class="radar-ring ring-2"></div>
+                <div class="radar-ring ring-3"></div>
+                <div class="radar-core">◉</div>
+              </div>
+              <h3>Awaiting story review</h3>
+              <p id="workspaceText">Enter a Jira key and click “Review Story” to start analysis.</p>
+              <div class="workspace-message" id="workspaceMessage" hidden></div>
+            </div>
+
+            <article class="report-content" id="reportContent" hidden></article>
+
+            <div class="loading-overlay" aria-hidden="true">
+              <div class="scan-beam"></div>
+              <div class="status-ticker">
+                <span class="ticker-label">Status</span>
+                <span class="ticker-text">Awaiting input</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="invalid-modal" id="invalidModal" role="dialog" aria-modal="true" aria-labelledby="invalidModalTitle" hidden>
+      <div class="invalid-modal-card">
+        <div class="invalid-modal-icon" aria-hidden="true">!</div>
+        <p class="section-kicker">JIRA VALIDATION</p>
+        <h2 id="invalidModalTitle">JIRA number is invalid</h2>
+        <p id="invalidModalMessage">We could not find that Jira story. Check the key and try again.</p>
+        <button class="modal-ok-btn" id="invalidModalOk" type="button">OK</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

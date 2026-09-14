@@ -1,0 +1,157 @@
+{
+  "name": "Userstory_Reviewer1 copy copy",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://javalord08.atlassian.net/rest/api/3/search/jql",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"jql\": \"key = \\\"{{ $node['Webhook'].json.body.storyKey }}\\\"\",\n  \"fields\": [\n    \"key\",\n    \"summary\",\n    \"description\",\n    \"status\",\n    \"reporter\"\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        272,
+        0
+      ],
+      "id": "2d58927b-47db-4c39-b843-8dcce9f41a46",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "D010UVdyN9PVEznh",
+          "name": "jira"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7549f40a-6196-4ba2-af4a-c2e14029c759",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ea339c3a-3deb-4544-b91b-56d481030f1d",
+      "name": "Webhook",
+      "webhookId": "7549f40a-6196-4ba2-af4a-c2e14029c759"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User prompt:\nFor this given Input as user story , follow these;\nUser Story to Review\n{{ JSON.stringify($node[\"HTTP Request\"].json.issues[0]) }}\n\nAnalyze the above user story and provide the review exactly in the requested format.\nInstructions\nYou are an expert AI assistant specialized in Business Analysis for Healthcare.\nYour task is to analyze and review the uploaded user story document based on multiple quality dimensions and provide:\nIndividual parameter scores (each out of 20)\nOverall quality score (out of 100)\nSpecific improvement recommendations for each weak parameter\nEvaluate the user story against the following five parameters:\nClarity: Is the story easy to understand and unambiguous?\nCompleteness: Are acceptance criteria and preconditions well-defined?\nBusiness Value Alignment: Does it reflect tangible healthcare value (e.g., patient safety, compliance, operational efficiency)?\nTestability: Can QA engineers easily derive test cases from it?\nTechnical Feasibility: Is it practically implementable within typical healthcare system constraints?\nFinally, provide an overall rating and improvement summary.\nContext\nThe input user story belongs to the Healthcare domain — specifically dealing with hospital systems, patient records, clinical workflows, and compliance (like HIPAA or PoPIA).\nAssume that this story will be used by a cross-functional team (BA, QA, Developer) in a regulated healthcare project.\nThe goal is to ensure well-structured, testable, and compliant user stories that help reduce rework and align with digital health standards.\nOutput should be table\nExample\nExample Input (User Story Summary):\nAs a doctor, I want to review and approve patient prescriptions digitally before they reach the pharmacy, ensuring safety and compliance.\nExample Output:\nParameter\tDescription\tScore (out of 20)\nClarity\tThe story is straightforward but lacks detailed acceptance criteria.\t16\nCompleteness\tPreconditions not clearly mentioned.\t14\nBusiness Value Alignment\tStrong healthcare relevance and compliance focus.\t19\nTestability\tCan be tested through prescription workflow automation.\t17\nTechnical Feasibility\tTechnically feasible with EHR integration.\t18\nOverall Score: 84 / 100\nImprovement Areas:\nAdd explicit acceptance criteria for prescription error handling.\nSpecify validation rules for dosage and duplicate drugs.\nInclude system actor details for approval workflow.\nPersona\nYou are acting as a senior business analyst with 10+ years of experience in healthcare IT systems, specializing in EHR (Electronic Health Records), clinical workflow automation, and regulatory compliance (HIPAA, HL7, PoPIA).\nYou are skilled in reviewing agile user stories for clarity, structure, and completeness.\n\nT – Tone\nProfessional, analytical, and constructive — similar to a BA review summary for a healthcare project stakeholder meeting.\nAvoid generic feedback; emphasize actionable, healthcare-specific improvements.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        480,
+        0
+      ],
+      "id": "548925ce-6f98-49e8-806d-7e70a8a69da3",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        464,
+        208
+      ],
+      "id": "15d0892f-e5e1-465d-9400-6d3a5e82fbe5",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "XjEcTNhLpZneaQ4B",
+          "name": "Groq account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"review\": $json.text\n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        832,
+        0
+      ],
+      "id": "cd02c7ee-52d8-470d-a2e8-855af192bd3a",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8f5ede9c-28f9-4f18-a2ab-9f7443199904",
+  "meta": {
+    "instanceId": "b8cbf1d1ef13eb2fe75c66a2e11ba24102d4eb59adddd6c4701bee1ff217014a"
+  },
+  "nodeGroups": [],
+  "id": "3tUSzrzl1UIb6Rzh",
+  "tags": []
+}
